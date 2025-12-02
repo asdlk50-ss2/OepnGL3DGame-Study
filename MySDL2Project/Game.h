@@ -1,5 +1,12 @@
+#pragma once
 #include <SDL.h>
 #include <iostream>
+
+struct Vector2
+{
+	float x;
+	float y;
+};
 
 class Game
 {
@@ -14,7 +21,14 @@ private:
 	void UpdateGame();
 	void GenerateOutput();
 
-	SDL_Renderer* mRenderer;
-	SDL_Window* mWindow;
-	bool mIsRunning;
+	float mScreenWidth = 1024;
+	float mScreenHeight = 768;
+	SDL_Renderer* mRenderer = nullptr;
+	SDL_Window* mWindow = nullptr;
+	bool mIsRunning = true;
+
+	int thickness = 15;
+	Vector2 mPaddlePos{ 0.0f, 0.0f };
+	float paddleHeight = 100;
+	Vector2 mBallPos{ 0.0f, 0.0f };
 };

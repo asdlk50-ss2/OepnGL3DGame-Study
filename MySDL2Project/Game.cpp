@@ -2,7 +2,7 @@
 
 Game::Game()
 {
-
+	
 }
 
 bool Game::Initialize() // SDL initialize function
@@ -14,7 +14,7 @@ bool Game::Initialize() // SDL initialize function
 		return false;
 	}
 
-	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter1)", 100, 100, 1024, 768, 0);
+	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter1)", 200, 200, mScreenWidth, mScreenHeight, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Falied to create window: %s", SDL_GetError());
@@ -26,8 +26,12 @@ bool Game::Initialize() // SDL initialize function
 		-1,			// 어떤 그래픽 카드를 사용할지
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC 
 	);
+	if (!mRenderer) { // 렌더러 생성 실패 체크도 추가하는 것이 좋습니다.
+		SDL_Log("Failed to create renderer: %s", SDL_GetError());
+		return false;
+	}
 
-
+	mIsRunning = true;
 	return true;
 }
 
@@ -76,5 +80,40 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
+	SDL_SetRenderDrawColor(
+		mRenderer,
+		0,
+		0,
+		255,
+		255
+	);
+	SDL_RenderClear(mRenderer);		// 위에서 얻은 색 값으로 화면 채우기
 
+
+	// Paddle
+	mPaddlePos.x = (mScreenWidth / 2) - (paddleHeight / 2);
+	mPaddlePos.y = mScreenHeight - 30;
+
+	SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
+	SDL_Rect wall{
+		static_cast<int>(mPaddlePos.x),
+		static_cast<int>(mPaddlePos.y),
+		paddleHeight,
+		thickness
+	};
+	SDL_RenderFillRect(mRenderer, &wall);
+
+	// Ball
+	mBallPos.x = (mScreenWidth / 2) - (thickness / 2);
+	mBallPos.y = mScreenHeight - 100;
+
+	SDL_Rect ball{
+		static_cast<int>(mBallPos.x),
+		static_cast<int>(mBallPos.y),
+		thickness,
+		thickness
+	};
+	SDL_RenderFillRect(mRenderer, &ball);
+
+	SDL_RenderPresent(mRenderer);	// 버퍼를 교체해서 렌더러 출력하기
 }
